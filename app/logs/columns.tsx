@@ -2,6 +2,12 @@
 
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import type { ColumnDef } from "@tanstack/react-table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export type LogEntry = {
   id: string;
@@ -18,7 +24,17 @@ export const columns: ColumnDef<LogEntry>[] = [
     header: "ID",
     cell: ({ row }) => {
       const id: string = row.getValue("id");
-      return id.slice(0, 8); // Show only the first 8 characters of the ID
+      const shortId = id.slice(0, 8) + "...";
+      return (
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>{shortId}</TooltipTrigger>
+            <TooltipContent>
+              <p>{id}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
     },
   },
   {
@@ -48,5 +64,16 @@ export const columns: ColumnDef<LogEntry>[] = [
 ];
 
 function formatDate(date: Date): string {
-  return date.toUTCString().split(" GMT")[0];
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: "short", // 'long' for full name, 'short' for abbreviated name
+    year: "numeric",
+    month: "short", // 'long' for full month name, 'short' for abbreviated month
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true, // Use 24-hour format; set to true for 12-hour format
+  };
+
+  return date.toLocaleString(undefined, options);
 }
