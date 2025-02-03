@@ -21,7 +21,7 @@ export default async function CheckInPage() {
       },
     },
     orderBy: {
-      checkIn: "desc",
+      checkIn: "asc",
     },
   });
 
